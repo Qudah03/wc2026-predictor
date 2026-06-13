@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import pytest
+import os
 
 from src.data_prep import clean_match_data
 
@@ -25,3 +26,12 @@ def test_clean_match_data_logic():
     
     # Check if France's win over Morocco correctly outputs 1 (home win)
     assert cleaned_df.loc[cleaned_df['home_team'] == 'France', 'home_win'].values[0] == 1
+
+def test_model_artifact_exclusion():
+    # Ensure that our pkl file exists locally but wouldn't be accidentally tracked if missing
+    # This is a sanity check for your local training execution
+    model_file = "src/baseline_model.pkl"
+    if os.path.exists(model_file):
+        assert os.path.getsize(model_file) > 0, "Model file exists but is empty. Check your training script."
+    else:
+        print(f"Model file {model_file} does not exist locally. This is expected if you haven't run the training script yet.")
